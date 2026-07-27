@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-func Onlypath(path string, next http.HandlerFunc) http.HandlerFunc {
+func OnlyPath(path string, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" {
-			log.Printf("%s %s", r.Method, r.URL)
+		if r.URL.Path != path {
+			log.Printf("%s %s", r.Method, r.URL.Path)
 			http.NotFound(w, r)
 			return
 		}
