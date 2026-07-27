@@ -63,3 +63,9 @@ Marketplace
 AI Assistant
 
 Profile
+
+
+## Welcome message:
+🌾 Welcome to Agro-Shield
+
+Helping protect every harvest and connect farmers to better opportunities.
