@@ -13,4 +13,8 @@ func RegisterRoutes() {
 		),
 	)
 	http.HandleFunc("/", middleware.Onlypath("/", middleware.OnlyGet(handlers.IndexHandler)))
+	http.HandleFunc("/register", middleware.Onlypath("/", middleware.OnlyGet(handlers.RegisterHandler)))
+	http.HandleFunc("/login", middleware.Onlypath("/", middleware.OnlyGet(handlers.LoginHandler)))
+	http.HandleFunc("/dashboard", middleware.Onlypath("/", middleware.OnlyGet(handlers.DashBoard)))
+	http.HandleFunc("/profile", middleware.Onlypath("/", middleware.OnlyGet(handlers.MarketHandler)))
 }
