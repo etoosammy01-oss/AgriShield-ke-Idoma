@@ -58,16 +58,3 @@ Challenges:
 Goal:
 Increase income while reducing crop losses.
 
-## User Stories
-
-## Features
-
-## MVP Scope
-
-## Success Metrics
-
-## Future Scope
-
-## Assumptions
-
-## Risks
