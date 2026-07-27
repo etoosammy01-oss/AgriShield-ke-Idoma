@@ -1,2 +1,2 @@
-# AgriShield-ke-Idoma
+# Agro-Shield
 Idoma centenary hackaton project
