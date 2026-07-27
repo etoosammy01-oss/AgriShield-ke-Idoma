@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func HandlerFunc(path string, next http.HandlerFunc) http.HandlerFunc {
+func Onlypath(path string, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			log.Printf("%s %s", r.Method, r.URL)

@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-var tmpl = template.Must(
-	template.ParseGlob("templates/*html"),
+var TMPL = template.Must(
+	template.ParseGlob("template/*.html"),
 )
 
 func RenderTemplates(w http.ResponseWriter, name string, data any) error {
-	return tmpl.ExecuteTemplate(w, name, data)
+	return TMPL.ExecuteTemplate(w, name, data)
 }
