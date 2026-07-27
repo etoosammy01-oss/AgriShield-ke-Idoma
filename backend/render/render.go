@@ -6,7 +6,7 @@ import (
 )
 
 var TMPL = template.Must(
-	template.ParseGlob("template/*.html"),
+	template.ParseGlob("templates/*.html"),
 )
 
 func RenderTemplates(w http.ResponseWriter, name string, data any) error {

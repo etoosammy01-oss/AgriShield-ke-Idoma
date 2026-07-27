@@ -12,5 +12,5 @@ func RegisterRoutes() {
 			http.FileServer(http.Dir("static")),
 		),
 	)
-	http.HandleFunc("/", middleware.Onlypath("/", middleware.OnlyGet(handlers.HomeHandler)))
+	http.HandleFunc("/", middleware.Onlypath("/", middleware.OnlyGet(handlers.IndexHandler)))
 }
