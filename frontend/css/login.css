@@ -1,0 +1,95 @@
+.auth-container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:100vh;
+}
+
+.auth-left{
+    background:green;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:80px;
+}
+
+.auth-left h1{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.auth-left p{
+    font-size:22px;
+    line-height:1.7;
+}
+
+.auth-right{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:white;
+}
+
+form{
+    width:420px;
+}
+
+form h2{
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+label{
+    display:block;
+    margin-top:20px;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    border:1px solid lightgray;
+    border-radius:8px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    margin-top:30px;
+    padding:16px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    background:green;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:darkgreen;
+}
+
+form p{
+    margin-top:25px;
+    text-align:center;
+}
+
+.message{
+    margin-top:20px;
+    font-weight:bold;
+}
+
+.toggle-password{
+    display:block;
+    margin-top:8px;
+    color:green;
+    cursor:pointer;
+    font-size:14px;
+    user-select:none;
+}
+
+button:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+}

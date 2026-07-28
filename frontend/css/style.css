@@ -1,0 +1,108 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:white;
+}
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 80px;
+    background:white;
+    box-shadow:0 2px 10px lightgray;
+}
+
+.logo{
+    font-size:32px;
+    font-weight:bold;
+    color:green;
+}
+
+nav{
+    display:flex;
+    gap:30px;
+}
+
+nav a{
+    text-decoration:none;
+    color:black;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:green;
+}
+
+.hero{
+    display:grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap:60px;
+    align-items:center;
+    padding:80px;
+    min-height:85vh;
+}
+
+.hero-content{
+    max-width:700px;
+}
+
+.hero-content h1{
+    font-size:56px;
+    margin-bottom:20px;
+}
+
+
+
+
+.hero-content p{
+    font-size:22px;
+    line-height:1.8;
+    margin-bottom:40px;
+    color:gray;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:20px;
+}
+
+.primary-btn{
+    background:green;
+    color:white;
+    padding:16px 36px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.secondary-btn{
+    border:2px solid green;
+    color:green;
+    padding:16px 36px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.primary-btn:hover{
+    background:darkgreen;
+}
+
+.secondary-btn:hover{
+    background:green;
+    color:white;
+}
+
+.hero-image{
+    width:45%;
+}
+
+.hero-image img{
+    width:100%;
+}
