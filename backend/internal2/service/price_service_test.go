@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"farmconnect/internal/domain"
-	"farmconnect/internal/repository/memory"
+	"backend/internal2/domain"
+	"backend/internal2/repository/memory"
 )
 
 func newTestService() *PriceService {

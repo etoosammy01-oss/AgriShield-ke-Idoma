@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"farmconnect/internal/domain"
-	"farmconnect/internal/service"
+    "backend/internal2/domain"
+	"backend/internal2/service"
 )
 
 type AdminHandler struct {

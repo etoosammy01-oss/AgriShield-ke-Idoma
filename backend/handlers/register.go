@@ -26,12 +26,12 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case http.MethodPost:
 		user := UserReg{
-			First_Name:       r.FormValue("firstname"),
-			Last_Name:        r.FormValue("lastname"),
+			First_Name:       r.FormValue("first-name"),
+			Last_Name:        r.FormValue("last-name"),
 			Phone:            r.FormValue("phone"),
 			Email:            r.FormValue("email"),
 			Password:         r.FormValue("password"),
-			Confirm_Password: r.FormValue("confirm password"),
+			Confirm_Password: r.FormValue("confirm-password"),
 		}
 		if user.First_Name == "" || user.Last_Name == "" || user.Phone == "" || user.Password == "" || user.Confirm_Password == "" {
 			log.Println("user details must not be empty")

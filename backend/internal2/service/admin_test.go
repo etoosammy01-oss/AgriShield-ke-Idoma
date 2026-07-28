@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"farmconnect/internal/domain"
+	"backend/internal2/domain"
 )
 
 func TestVerifySubmitter_SetsVerifiedAndTrust(t *testing.T) {

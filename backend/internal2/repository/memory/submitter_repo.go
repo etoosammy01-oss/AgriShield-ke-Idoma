@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"farmconnect/internal/domain"
+	"backend/internal2/domain"
 )
 
 type SubmitterRepo struct {

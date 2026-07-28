@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
-
-	"farmconnect/internal/domain"
-
-	"github.com/google/uuid"
+	 "github.com/google/uuid"
+	"backend/internal2/domain"
 )
 
 const (
@@ -40,9 +38,9 @@ const (
 )
 
 type PriceService struct {
-	prices      domain.PriceRepository
-	submitters  domain.SubmitterRepository
-	now         func() time.Time // overridable for tests
+	prices     domain.PriceRepository
+	submitters domain.SubmitterRepository
+	now        func() time.Time // overridable for tests
 }
 
 func NewPriceService(prices domain.PriceRepository, submitters domain.SubmitterRepository) *PriceService {

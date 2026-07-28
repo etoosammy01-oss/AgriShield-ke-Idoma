@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"farmconnect/internal/domain"
+	"backend/internal2/domain"
 )
 
 type PriceRepo struct {
