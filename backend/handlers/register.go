@@ -5,15 +5,18 @@ import (
 	"log"
 	"net/http"
 )
-type UserReg struct{
-	Name string
-	Phone string
-	Email string
-	Password string
+
+type UserReg struct {
+	Name        string
+	Phone       string
+	Email       string
+	Password    string
+	ConfirmPass string
 }
+
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet :
+	case http.MethodGet:
 		log.Println("User Visited Register page")
 		if err := render.RenderTemplates(w, "register.html", nil); err != nil {
 			log.Println("render error", err)
@@ -22,7 +25,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case http.MethodPost:
 		log.Println("form submitted successfully")
-		http.Redirect(w,r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
