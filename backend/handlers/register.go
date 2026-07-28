@@ -5,15 +5,19 @@ import (
 	"log"
 	"net/http"
 )
-type UserReg struct{
-	Name string
-	Phone string
-	Email string
-	Password string
+
+type UserReg struct {
+	First_Name       string
+	Last_Name        string
+	Phone            string
+	Email            string
+	Password         string
+	Confirm_Password string
 }
+
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet :
+	case http.MethodGet:
 		log.Println("User Visited Register page")
 		if err := render.RenderTemplates(w, "register.html", nil); err != nil {
 			log.Println("render error", err)
@@ -21,8 +25,25 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case http.MethodPost:
+		user := UserReg{
+			First_Name:       r.FormValue("firstname"),
+			Last_Name:        r.FormValue("lastname"),
+			Phone:            r.FormValue("phone"),
+			Email:            r.FormValue("email"),
+			Password:         r.FormValue("password"),
+			Confirm_Password: r.FormValue("confirm password"),
+		}
+		if user.First_Name == "" || user.Last_Name == "" || user.Phone == "" || user.Password == "" || user.Confirm_Password == "" {
+			log.Println("user details must not be empty")
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		} else if user.Password != user.Confirm_Password {
+			log.Println("Password Mismatch")
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
 		log.Println("form submitted successfully")
-		http.Redirect(w,r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
