@@ -2,11 +2,12 @@ package routes
 
 import (
 	"backend/handlers"
+	app "backend/internal"
 	"backend/middleware"
 	"net/http"
 )
 
-func RegisterRoutes() {
+func RegisterRoutes(container *app.Container) {
 	http.Handle(
 		"/static/", http.StripPrefix("/static/",
 			http.FileServer(http.Dir("../frontend")),

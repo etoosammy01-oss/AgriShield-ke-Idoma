@@ -1,6 +1,7 @@
 package main
 
 import (
+	app "backend/internal"
 	"backend/internal/database"
 	"backend/internal/repository"
 	"backend/internal/services"
@@ -16,6 +17,10 @@ func main() {
 		log.Fatal(err)
 	}
 
+	repo := repository.NewFarmerRepository(db)
+
+	container := app.NewContainer(repo)
+
 	farmerRepo := repository.NewFarmerRepository(db)
 
 	authService := services.NewAuthService(farmerRepo)
@@ -27,7 +32,7 @@ func main() {
 
 	log.Println("Server Starting on: http://localhost:8080 ...")
 
-	routes.RegisterRoutes()
+	routes.RegisterRoutes(container)
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Println(err)
 	}
