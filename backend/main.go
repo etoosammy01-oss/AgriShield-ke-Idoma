@@ -2,6 +2,8 @@ package main
 
 import (
 	"backend/internal/database"
+	"backend/internal/repository"
+	"backend/internal/services"
 	"backend/routes"
 	"log"
 	"net/http"
@@ -14,11 +16,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	farmerRepo := repository.NewFarmerRepository(db)
+
+	authService := services.NewAuthService(farmerRepo)
+	_ = authService
+
 	if err := database.RunMigration(db); err != nil {
 		log.Fatal(err)
 	}
-
-	//farmerRepo := repository.NewFarmerRepository(db)
 
 	log.Println("Server Starting on: http://localhost:8080 ...")
 

@@ -60,6 +60,10 @@ func (r *FarmerRepository) GetByPhone(phone string) (*models.Farmer, error) {
 		&farmer.UpdatedAt,
 	)
 
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
