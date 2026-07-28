@@ -1,16 +1,16 @@
 const images = [
 
-    "assets/images/Farmer1.jpeg",
-    "assets/images/Farmer2.jpeg",
-    "assets/images/Farmer3.jpeg",
-    "assets/images/Farmer4.jpeg",
-    "assets/images/Farmer5.jpeg",
-    "assets/images/Farmer5.jpeg",
-    "assets/images/Farmer6.jpeg",
-    "assets/images/Farmer7.jpeg",
-    "assets/images/Farmer8.jpeg",
-    "assets/images/Farmer9.jpeg",
-    "assets/images/Farmer10.jpeg"
+    "/static/assets/images/Farmer1.jpeg",
+    "/static/assets/images/Farmer2.jpeg",
+    "/static/assets/images/Farmer3.jpeg",
+    "/static/assets/images/Farmer4.jpeg",
+    "/static/assets/images/Farmer5.jpeg",
+    "/static/assets/images/Farmer5.jpeg",
+    "/static/assets/images/Farmer6.jpeg",
+    "/static/assets/images/Farmer7.jpeg",
+    "/static/assets/images/Farmer8.jpeg",
+    "/static/assets/images/Farmer9.jpeg",
+    "/static/assets/images/Farmer10.jpeg"
 
 ];
 
