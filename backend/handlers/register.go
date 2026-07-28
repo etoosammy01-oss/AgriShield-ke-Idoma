@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"backend/internal/app"
 	"backend/render"
 	"log"
 	"net/http"
 )
+
 
 type UserReg struct {
 	First_Name       string
@@ -15,7 +17,7 @@ type UserReg struct {
 	Confirm_Password string
 }
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Register) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		log.Println("User Visited Register page")
@@ -42,7 +44,23 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Bad Request", http.StatusBadRequest)
 			return
 		}
-		log.Println("form submitted successfully")
+		location := r.FormValue("location")
+
+		err := app.AuthService.Register(
+			user.First_Name,
+			user.Last_Name,
+			user.Phone,
+			user.Password,
+			location,
+		)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		log.Println("Farmer registered successfully")
+
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

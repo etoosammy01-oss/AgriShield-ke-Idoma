@@ -1,13 +1,13 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	app "backend/internal"
 	"backend/internal/database"
 	"backend/internal/repository"
-	"backend/internal/services"
 	"backend/routes"
-	"log"
-	"net/http"
 )
 
 func main() {
@@ -16,24 +16,21 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	repo := repository.NewFarmerRepository(db)
-
-	container := app.NewContainer(repo)
-
-	farmerRepo := repository.NewFarmerRepository(db)
-
-	authService := services.NewAuthService(farmerRepo)
-	_ = authService
+	defer db.Close()
 
 	if err := database.RunMigration(db); err != nil {
 		log.Fatal(err)
 	}
 
+	// Create repository
+	repo := repository.NewFarmerRepository(db)
+
+	// Create container
+	container := app.NewContainer(repo)
+
 	log.Println("Server Starting on: http://localhost:8080 ...")
 
 	routes.RegisterRoutes(container)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Println(err)
-	}
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

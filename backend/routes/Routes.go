@@ -14,7 +14,15 @@ func RegisterRoutes(container *app.Container) {
 		),
 	)
 	http.HandleFunc("/", middleware.OnlyPath("/", middleware.OnlyGet(handlers.IndexHandler)))
-	http.HandleFunc("/register", middleware.OnlyPath("/register", handlers.RegisterHandler))
+	registerHandler := handlers.NewRegisterHandler(container.Auth)
+
+	http.HandleFunc(
+		"/register",
+		middleware.OnlyPath(
+			"/register",
+			registerHandler.RegisterHandler,
+		),
+	)
 	http.HandleFunc("/login", middleware.OnlyPath("/login", middleware.OnlyGet(handlers.LoginHandler)))
 	http.HandleFunc("/dashboard", middleware.OnlyPath("/dashboard", middleware.OnlyGet(handlers.DashBoard)))
 	http.HandleFunc("/profile", middleware.OnlyPath("/profile", middleware.OnlyGet(handlers.MarketHandler)))
