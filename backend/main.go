@@ -28,9 +28,10 @@ func main() {
 	// Create container
 	container := app.NewContainer(repo)
 
-	log.Println("Server Starting on: http://localhost:8080 ...")
-
 	routes.RegisterRoutes(container)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Server Starting on: http://localhost:8080 ...")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+	    log.Println(err)
+	}
 }
