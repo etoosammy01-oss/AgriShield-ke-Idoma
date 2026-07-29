@@ -1,0 +1,55 @@
+.storage{
+    padding:50px 80px;
+}
+
+.storage-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.storage-header h1{
+    font-size:40px;
+}
+
+.storage-header p{
+    color:gray;
+    margin-top:8px;
+}
+
+.storage-search{
+    margin-bottom:30px;
+}
+
+.storage-search input{
+    max-width:400px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 12px lightgray;
+}
+
+th{
+    background:green;
+    color:white;
+}
+
+th,
+td{
+    padding:18px;
+    text-align:left;
+}
+
+tbody tr{
+    border-bottom:1px solid lightgray;
+}
+
+tbody tr:hover{
+    background:whitesmoke;
+}
