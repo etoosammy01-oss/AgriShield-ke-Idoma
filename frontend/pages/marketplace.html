@@ -20,6 +20,7 @@
         <a href="/storage">Storage</a>
         {{end}}
         <a href="/marketplace">Marketplace</a>
+        <a href="/negotiations">Negotiations</a>
         {{if not .IsBuyer}}
         <a href="/ai-assistant">AI Assistant</a>
         {{end}}
@@ -63,6 +64,10 @@
         {{range .Crops}}
         <div class="product-card">
 
+            {{if .ImageURL}}
+            <img src="{{.ImageURL}}" alt="{{.Name}}" class="product-image">
+            {{end}}
+
             <h3>{{.Name}}</h3>
 
             <p class="price">₦{{printf "%.2f" .PricePerUnit}} / {{.Unit}}</p>
@@ -85,18 +90,40 @@
                 >
                 <button type="submit">Buy</button>
             </form>
+
+            <form method="POST" action="/negotiation/start" class="negotiate-form">
+                <input type="hidden" name="crop_id" value="{{.ID}}">
+                <input
+                    type="number"
+                    name="quantity"
+                    min="0.01"
+                    max="{{.Quantity}}"
+                    step="0.01"
+                    placeholder="Qty"
+                    required
+                >
+                <input
+                    type="number"
+                    name="offer_price"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Your offer ₦"
+                    required
+                >
+                <button type="submit">Negotiate</button>
+            </form>
             {{end}}
 
         </div>
         {{else}}
-        <p>No produce listed for sale yet.</p>
+        <p>No product listed for sale yet.</p>
         {{end}}
 
     </section>
 
 </main>
 
-<script src="../js/marketplace.js"></script>
+<script src="/static/js/marketplace.js"></script>
 
 </body>
 </html>

@@ -15,6 +15,7 @@
         <a href="/dashboard">Dashboard</a>
         <a href="/storage">Storage</a>
         <a href="/marketplace">Marketplace</a>
+        <a href="/negotiations">Negotiations</a>
         <a href="/ai-assistant">AI Assistant</a>
         <a href="/profile">Profile</a>
         <a href="/logout">Logout</a>
@@ -42,7 +43,8 @@
     <table>
         <thead>
             <tr>
-                <th>Produce</th>
+                <th>Photo</th>
+                <th>Products</th>
                 <th>Quantity</th>
                 <th>Unit</th>
                 <th>Location</th>
@@ -54,6 +56,7 @@
         <tbody id="storage-body">
             {{range .Crops}}
             <tr>
+                <td>{{if .ImageURL}}<img src="{{.ImageURL}}" alt="{{.Name}}" class="thumb">{{else}}—{{end}}</td>
                 <td>{{.Name}}</td>
                 <td>{{.Quantity}}</td>
                 <td>{{.Unit}}</td>
@@ -63,16 +66,16 @@
                 <td>{{.CreatedAt.Format "02 Jan 2006"}}</td>
             </tr>
             {{else}}
-            <tr><td colspan="7">No produce in storage yet — add your first item above.</td></tr>
+            <tr><td colspan="8">No produce in storage yet — add your first item above.</td></tr>
             {{end}}
         </tbody>
     </table>
 
     <div id="modal" class="modal">
-        <form id="storage-form" method="POST" action="/storage">
-            <h2>Add Produce</h2>
+        <form id="storage-form" method="POST" action="/storage" enctype="multipart/form-data">
+            <h2>Add Products</h2>
 
-            <label>Produce Name</label>
+            <label>Product Name</label>
             <input type="text" name="produce" placeholder="e.g. Maize" required>
 
             <label>Quantity</label>
@@ -86,6 +89,9 @@
 
             <label>Price per Unit (₦)</label>
             <input type="number" step="0.01" min="0" name="price" placeholder="Required if listing for sale">
+
+            <label>Photo</label>
+            <input type="file" name="produce_image" accept="image/*">
 
             <label class="checkbox-row">
                 <input type="checkbox" name="list_for_sale">
@@ -101,7 +107,7 @@
 
 </main>
 
-<script src="../js/storage.js"></script>
+<script src="/static/js/storage.js"></script>
 
 </body>
 </html>

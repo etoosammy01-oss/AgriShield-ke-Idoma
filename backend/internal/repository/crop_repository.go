@@ -15,21 +15,27 @@ func NewCropRepository(db *sql.DB) *CropRepository {
 
 func (r *CropRepository) Create(crop *models.Crop) error {
 	query := `
-	INSERT INTO crops (farmer_id, name, quantity, unit, location, price_per_unit, listed_for_sale)
-	VALUES (?, ?, ?, ?, ?, ?, ?)
+	INSERT INTO crops (farmer_id, name, quantity, unit, location, price_per_unit, listed_for_sale, image_url)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	listed := 0
 	if crop.ListedForSale {
 		listed = 1
 	}
-	_, err := r.db.Exec(query, crop.FarmerID, crop.Name, crop.Quantity, crop.Unit, crop.Location, crop.PricePerUnit, listed)
-	return err
+	res, err := r.db.Exec(query, crop.FarmerID, crop.Name, crop.Quantity, crop.Unit, crop.Location, crop.PricePerUnit, listed, crop.ImageURL)
+	if err != nil {
+		return err
+	}
+	if id, err := res.LastInsertId(); err == nil {
+		crop.ID = int(id)
+	}
+	return nil
 }
 
 // ListByFarmer returns everything a farmer has in storage (listed or not).
 func (r *CropRepository) ListByFarmer(farmerID int) ([]models.Crop, error) {
 	query := `
-	SELECT id, farmer_id, name, quantity, unit, location, price_per_unit, listed_for_sale, created_at, updated_at
+	SELECT id, farmer_id, name, quantity, unit, location, price_per_unit, listed_for_sale, image_url, created_at, updated_at
 	FROM crops WHERE farmer_id = ? ORDER BY created_at DESC
 	`
 	rows, err := r.db.Query(query, farmerID)
@@ -42,7 +48,7 @@ func (r *CropRepository) ListByFarmer(farmerID int) ([]models.Crop, error) {
 	for rows.Next() {
 		var c models.Crop
 		var listed int
-		if err := rows.Scan(&c.ID, &c.FarmerID, &c.Name, &c.Quantity, &c.Unit, &c.Location, &c.PricePerUnit, &listed, &c.CreatedAt, &c.UpdatedAt); err != nil {
+		if err := rows.Scan(&c.ID, &c.FarmerID, &c.Name, &c.Quantity, &c.Unit, &c.Location, &c.PricePerUnit, &listed, &c.ImageURL, &c.CreatedAt, &c.UpdatedAt); err != nil {
 			return nil, err
 		}
 		c.ListedForSale = listed == 1
@@ -56,7 +62,7 @@ func (r *CropRepository) ListByFarmer(farmerID int) ([]models.Crop, error) {
 func (r *CropRepository) ListAvailable() ([]models.Crop, error) {
 	query := `
 	SELECT crops.id, crops.farmer_id, crops.name, crops.quantity, crops.unit, crops.location,
-	       crops.price_per_unit, crops.listed_for_sale, crops.created_at, crops.updated_at,
+	       crops.price_per_unit, crops.listed_for_sale, crops.image_url, crops.created_at, crops.updated_at,
 	       farmers.full_name
 	FROM crops
 	JOIN farmers ON farmers.id = crops.farmer_id
@@ -73,7 +79,7 @@ func (r *CropRepository) ListAvailable() ([]models.Crop, error) {
 	for rows.Next() {
 		var c models.Crop
 		var listed int
-		if err := rows.Scan(&c.ID, &c.FarmerID, &c.Name, &c.Quantity, &c.Unit, &c.Location, &c.PricePerUnit, &listed, &c.CreatedAt, &c.UpdatedAt, &c.SellerName); err != nil {
+		if err := rows.Scan(&c.ID, &c.FarmerID, &c.Name, &c.Quantity, &c.Unit, &c.Location, &c.PricePerUnit, &listed, &c.ImageURL, &c.CreatedAt, &c.UpdatedAt, &c.SellerName); err != nil {
 			return nil, err
 		}
 		c.ListedForSale = listed == 1
@@ -84,12 +90,12 @@ func (r *CropRepository) ListAvailable() ([]models.Crop, error) {
 
 func (r *CropRepository) GetByID(id int) (*models.Crop, error) {
 	query := `
-	SELECT id, farmer_id, name, quantity, unit, location, price_per_unit, listed_for_sale, created_at, updated_at
+	SELECT id, farmer_id, name, quantity, unit, location, price_per_unit, listed_for_sale, image_url, created_at, updated_at
 	FROM crops WHERE id = ?
 	`
 	var c models.Crop
 	var listed int
-	err := r.db.QueryRow(query, id).Scan(&c.ID, &c.FarmerID, &c.Name, &c.Quantity, &c.Unit, &c.Location, &c.PricePerUnit, &listed, &c.CreatedAt, &c.UpdatedAt)
+	err := r.db.QueryRow(query, id).Scan(&c.ID, &c.FarmerID, &c.Name, &c.Quantity, &c.Unit, &c.Location, &c.PricePerUnit, &listed, &c.ImageURL, &c.CreatedAt, &c.UpdatedAt)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}

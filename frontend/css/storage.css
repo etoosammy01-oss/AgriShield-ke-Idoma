@@ -77,6 +77,13 @@ tbody tr:hover{
     font-weight:bold;
 }
 
+.thumb{
+    width:48px;
+    height:48px;
+    object-fit:cover;
+    border-radius:6px;
+}
+
 /* Add Produce modal (this was missing before — the button had nowhere to open) */
 .modal{
     display:none;

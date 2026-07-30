@@ -44,6 +44,7 @@ func (r *FarmerRepository) GetByPhone(phone string) (*models.Farmer, error) {
 		password_hash,
 		location,
 		role,
+		COALESCE(photo_url, '') AS photo_url,
 		created_at,
 		updated_at
 	FROM farmers
@@ -59,6 +60,7 @@ func (r *FarmerRepository) GetByPhone(phone string) (*models.Farmer, error) {
 		&farmer.PasswordHash,
 		&farmer.Location,
 		&farmer.Role,
+		&farmer.PhotoURL,
 		&farmer.CreatedAt,
 		&farmer.UpdatedAt,
 	)
@@ -66,7 +68,6 @@ func (r *FarmerRepository) GetByPhone(phone string) (*models.Farmer, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
-
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +75,6 @@ func (r *FarmerRepository) GetByPhone(phone string) (*models.Farmer, error) {
 	return &farmer, nil
 }
 
-// GetByID fetches a farmer/buyer by their primary key. Used to load the
-// logged-in user's details for the dashboard and profile pages.
 func (r *FarmerRepository) GetByID(id int) (*models.Farmer, error) {
 
 	query := `
@@ -86,6 +85,7 @@ func (r *FarmerRepository) GetByID(id int) (*models.Farmer, error) {
 		password_hash,
 		location,
 		role,
+		COALESCE(photo_url, '') AS photo_url,
 		created_at,
 		updated_at
 	FROM farmers
@@ -101,6 +101,7 @@ func (r *FarmerRepository) GetByID(id int) (*models.Farmer, error) {
 		&farmer.PasswordHash,
 		&farmer.Location,
 		&farmer.Role,
+		&farmer.PhotoURL,
 		&farmer.CreatedAt,
 		&farmer.UpdatedAt,
 	)
@@ -108,10 +109,40 @@ func (r *FarmerRepository) GetByID(id int) (*models.Farmer, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
-
 	if err != nil {
 		return nil, err
 	}
 
 	return &farmer, nil
+}
+
+// UpdateProfile updates the editable personal details.
+func (r *FarmerRepository) UpdateProfile(id int, fullName, phone, location string) error {
+	query := `
+	UPDATE farmers
+	SET full_name = ?, phone = ?, location = ?, updated_at = CURRENT_TIMESTAMP
+	WHERE id = ?
+	`
+	_, err := r.db.Exec(query, fullName, phone, location, id)
+	return err
+}
+
+// UpdatePhoto sets the farmer's passport photograph URL.
+func (r *FarmerRepository) UpdatePhoto(id int, photoURL string) error {
+	_, err := r.db.Exec(
+		`UPDATE farmers SET photo_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+		photoURL,
+		id,
+	)
+	return err
+}
+
+// UpdatePassword sets a new password hash.
+func (r *FarmerRepository) UpdatePassword(id int, passwordHash string) error {
+	_, err := r.db.Exec(
+		`UPDATE farmers SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+		passwordHash,
+		id,
+	)
+	return err
 }

@@ -11,6 +11,7 @@ type Crop struct {
 	Location      string
 	PricePerUnit  float64
 	ListedForSale bool
+	ImageURL      string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 

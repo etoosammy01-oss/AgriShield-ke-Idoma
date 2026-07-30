@@ -9,6 +9,7 @@ type Farmer struct {
 	PasswordHash string
 	Location     string
 	Role         string // "farmer" or "buyer"
+	PhotoURL     string // passport photograph
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

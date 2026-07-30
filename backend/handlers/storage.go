@@ -44,6 +44,11 @@ func (h *Storage) StorageHandler(w http.ResponseWriter, r *http.Request) {
 		h.render(w, farmer.ID, farmer.FullName, "")
 
 	case http.MethodPost:
+		if err := r.ParseMultipartForm(10 << 20); err != nil {
+			h.render(w, farmer.ID, farmer.FullName, "Couldn't process the form")
+			return
+		}
+
 		name := r.FormValue("produce")
 		unit := r.FormValue("unit")
 		location := r.FormValue("location")
@@ -51,7 +56,12 @@ func (h *Storage) StorageHandler(w http.ResponseWriter, r *http.Request) {
 		price, _ := strconv.ParseFloat(r.FormValue("price"), 64)
 		listForSale := r.FormValue("list_for_sale") == "on"
 
-		if err := h.crop.AddCrop(farmer.ID, name, unit, location, quantity, price, listForSale); err != nil {
+		imageURL, err := saveUploadedFile(r, "produce_image", "crops")
+		if err != nil {
+			log.Println("produce image upload failed:", err)
+		}
+
+		if err := h.crop.AddCrop(farmer.ID, name, unit, location, quantity, price, listForSale, imageURL); err != nil {
 			h.render(w, farmer.ID, farmer.FullName, err.Error())
 			return
 		}

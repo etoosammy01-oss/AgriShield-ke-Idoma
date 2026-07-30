@@ -21,6 +21,7 @@
         <a href="/storage">Storage</a>
         {{end}}
         <a href="/marketplace">Marketplace</a>
+        <a href="/negotiations">Negotiations</a>
         {{if not .IsBuyer}}
         <a href="/ai-assistant">AI Assistant</a>
         {{end}}
@@ -34,7 +35,11 @@
 
     <div class="profile-header">
 
-        <img src="../assets/images/profile.jpg" alt="Profile Photo">
+        {{if .PhotoURL}}
+        <img src="{{.PhotoURL}}" alt="Profile Photo">
+        {{else}}
+        <div class="profile-photo-placeholder">👤</div>
+        {{end}}
 
         <div>
 
@@ -42,7 +47,7 @@
 
             <p>{{if .IsBuyer}}Buyer{{else}}Farmer{{end}} • {{.Location}}</p>
 
-            <button>Edit Profile</button>
+            <button type="button" id="edit-profile-btn">Edit Profile</button>
 
         </div>
 
@@ -169,17 +174,38 @@
 
             <h2>Security</h2>
 
-            <button>Change Password</button>
-
-            <button>Update Phone</button>
-
-            <button>Delete Account</button>
+            <a href="/forgot-password"><button type="button">Change Password</button></a>
 
         </div>
 
     </section>
 
 </main>
+
+<div id="edit-modal" class="modal">
+    <form method="POST" action="/profile/edit" enctype="multipart/form-data">
+        <h2>Edit Profile</h2>
+
+        <label>Full Name</label>
+        <input type="text" name="full_name" value="{{.FullName}}" required>
+
+        <label>Phone</label>
+        <input type="tel" name="phone" value="{{.Phone}}" required>
+
+        <label>Location</label>
+        <input type="text" name="location" value="{{.Location}}">
+
+        <label>Passport Photograph</label>
+        <input type="file" name="passport" accept="image/*">
+
+        <div class="modal-actions">
+            <button type="submit">Save</button>
+            <button type="button" id="cancel-edit-btn">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script src="/static/js/profile.js"></script>
 
 </body>
 </html>

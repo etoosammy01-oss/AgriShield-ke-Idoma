@@ -15,7 +15,7 @@ func NewCropService(repo *repository.CropRepository) *CropService {
 	return &CropService{repo: repo}
 }
 
-func (s *CropService) AddCrop(farmerID int, name, unit, location string, quantity, price float64, listForSale bool) error {
+func (s *CropService) AddCrop(farmerID int, name, unit, location string, quantity, price float64, listForSale bool, imageURL string) error {
 	if name == "" {
 		return errors.New("crop name is required")
 	}
@@ -34,6 +34,7 @@ func (s *CropService) AddCrop(farmerID int, name, unit, location string, quantit
 		Location:      location,
 		PricePerUnit:  price,
 		ListedForSale: listForSale,
+		ImageURL:      imageURL,
 	}
 
 	return s.repo.Create(crop)

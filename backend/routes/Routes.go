@@ -17,10 +17,7 @@ func RegisterRoutes(container *app.Container) {
 	http.HandleFunc("/", middleware.OnlyPath("/", middleware.OnlyGet(handlers.IndexHandler)))
 
 	registerHandler := handlers.NewRegisterHandler(container.Auth)
-	http.HandleFunc(
-		"/register",
-		middleware.OnlyPath("/register", registerHandler.RegisterHandler),
-	)
+	http.HandleFunc("/register", middleware.OnlyPath("/register", registerHandler.RegisterHandler))
 
 	// Login handles its own GET/POST switch internally, so it isn't
 	// wrapped in OnlyGet (that was blocking POST from ever reaching it).
@@ -28,6 +25,9 @@ func RegisterRoutes(container *app.Container) {
 	http.HandleFunc("/login", middleware.OnlyPath("/login", loginHandler.LoginHandler))
 
 	http.HandleFunc("/logout", middleware.OnlyPath("/logout", middleware.OnlyGet(handlers.LogoutHandler)))
+
+	forgotPasswordHandler := handlers.NewForgotPasswordHandler(container.Auth)
+	http.HandleFunc("/forgot-password", middleware.OnlyPath("/forgot-password", forgotPasswordHandler.Handler))
 
 	// Everything below is protected: RequireAuth loads the logged-in
 	// farmer/buyer and attaches it to the request before the handler runs.
@@ -42,6 +42,12 @@ func RegisterRoutes(container *app.Container) {
 	http.HandleFunc(
 		"/profile",
 		middleware.OnlyPath("/profile", middleware.OnlyGet(middleware.RequireAuth(container.FarmerRepo, profileHandler.ProfileHandler))),
+	)
+
+	profileEditHandler := handlers.NewProfileEditHandler(container.Auth)
+	http.HandleFunc(
+		"/profile/edit",
+		middleware.OnlyPath("/profile/edit", middleware.RequireAuth(container.FarmerRepo, profileEditHandler.Handler)),
 	)
 
 	// Storage handles its own GET/POST switch (farmers register crops here).
@@ -63,5 +69,21 @@ func RegisterRoutes(container *app.Container) {
 	http.HandleFunc(
 		"/ai-assistant",
 		middleware.OnlyPath("/ai-assistant", middleware.RequireAuth(container.FarmerRepo, aiHandler.Handler)),
+	)
+
+	// Negotiations: list, thread (chat + offer/accept/reject), and starting
+	// a new one from the Marketplace page.
+	negotiationHandler := handlers.NewNegotiationHandler(container.Negotiation)
+	http.HandleFunc(
+		"/negotiations",
+		middleware.OnlyPath("/negotiations", middleware.OnlyGet(middleware.RequireAuth(container.FarmerRepo, negotiationHandler.ListHandler))),
+	)
+	http.HandleFunc(
+		"/negotiation",
+		middleware.OnlyPath("/negotiation", middleware.RequireAuth(container.FarmerRepo, negotiationHandler.ThreadHandler)),
+	)
+	http.HandleFunc(
+		"/negotiation/start",
+		middleware.OnlyPath("/negotiation/start", middleware.RequireAuth(container.FarmerRepo, negotiationHandler.StartHandler)),
 	)
 }
