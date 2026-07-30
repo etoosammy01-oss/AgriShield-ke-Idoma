@@ -1,6 +1,6 @@
 ## Dashboard layout:
 +------------------------------------------------------+
-| Logo                AgriShield Ke Idoma      Profile |
+| Logo                Agro-Shield              Profile |
 +------------------------------------------------------+
 
 Good Morning, David 👋

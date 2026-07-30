@@ -1,133 +1,361 @@
-# Agro-Shield
-Idoma centenary hackaton project
+# 🌾 Agro-Shield
+
+> **Protecting Every Harvest. Connecting Every Farmer.**
+
+Agro-Shield  is a digital agriculture platform designed to reduce post-harvest losses, improve market access, and empower farmers across Idoma communities and beyond.
+
+Built for the **Idoma Centenary Plus Hackathon 2026**, the platform addresses one of Benue State's biggest agricultural challenges: helping farmers store, manage, and sell their produce at fair market prices while providing access to intelligent farming assistance.
+
+---
+
+# 📌 Problem Statement
+
+Benue State is one of Nigeria's largest producers of agricultural products, yet many farmers continue to experience:
+
+- High post-harvest losses
+- Poor access to verified buyers
+- Unstable market prices
+- Limited storage management
+- Lack of modern digital farming tools
+- Poor access to agricultural information
+
+Many smallholder farmers are forced to sell immediately after harvest at very low prices because they lack information and access to larger markets.
+
+Agro-Shield aims to bridge this gap.
+
+---
+
+# 💡 Our Solution
+
+Agro-Shield provides farmers with one platform where they can:
+
+- Register as farmers or buyers
+- Manage stored produce
+- Connect directly with buyers
+- Access an online agricultural marketplace
+- Receive AI-powered farming assistance
+- Track farming activities through a personalized dashboard
+
+---
+
+# 🚀 Current Features
+
+## ✅ Landing Page
+
+- Modern responsive homepage
+- Project introduction
+- Easy navigation
+- Farmer-focused branding
+
+---
+
+## ✅ User Registration
+
+Farmers can register by providing:
+
+- Full Name
+- Phone Number
+- Password
+- Location
+
+Backend validation includes:
+
+- Required fields
+- Duplicate phone number detection
+- Password hashing using bcrypt
+- SQLite database storage
+
+---
+
+## ✅ Login Page
+
+Secure login interface with:
+
+- Phone number authentication
+- Password verification
+- Responsive design
+
+---
+
+## ✅ Farmer Dashboard
+
+The dashboard currently includes:
+
+- Welcome screen
+- Product overview
+- Marketplace overview
+- Revenue overview
+- AI Diagnoses
+- Navigation system
+- Quick action cards including (storang, market, ai assistant...)
 
 
-# FarmConnect — Crowd-Sourced Price Submission Service
+#### 🤖 AI Crop Disease Assistant
 
-Go backend module implementing crowd-sourced market price collection: farmers/field
-agents submit prices they observe, submissions are automatically validated against
-recent local history and submitter trust, and accepted prices roll up into daily
-aggregates that power the "current price" / trend features.
+Farmers will be able to:
 
-## Run it
+- Upload crop images
+- Detect diseases
+- Receive treatment recommendations
+- Learn preventive measures
+---
 
-```bash
-go run ./cmd/api
-# Server listens on :8080
-```
+## ✅ Buyer Dashboard
 
-Submit a price:
-```bash
-curl -X POST localhost:8080/api/v1/prices/report \
-  -d '{"commodity_id":"maize","market_id":"makurdi-central","submitter_id":"farmer-1","price":18000,"currency":"NGN","unit":"bag_100kg"}'
-```
+Buyers have a dedicated dashboard for:
 
-Get today's aggregate:
-```bash
-curl "localhost:8080/api/v1/prices/current?commodity_id=maize&market_id=makurdi-central"
-```
+- Marketplace access
+- Purchase history
+- Profile management
 
-### Admin: verify a submitter
+---
 
-Marks a field agent/vetted farmer as trusted, so their cold-start submissions
-auto-accept instead of sitting `pending`:
+## ✅ Backend Architecture
 
-```bash
-curl -X POST localhost:8080/api/v1/admin/submitters/agent-1/verify \
-  -d '{"trust_score":0.9}'
-```
-
-### Admin: review a pending or flagged report
-
-```bash
-curl -X POST localhost:8080/api/v1/admin/reports/<report_id>/review \
-  -d '{"decision":"accepted","reason":"confirmed by phone with the reporting agent"}'
-```
-
-`decision` must be `"accepted"` or `"rejected"`. Only reports currently
-`pending` or `flagged` can be reviewed.
-
-> **No auth yet.** Both admin endpoints are wide open right now — they exist
-> to prove out the moderation logic, not to go anywhere near production
-> without an admin-only auth check in front of them first.
-
-### Full end-to-end flow
-
-```bash
-# 1. An unverified farmer's first submission (no local history) -> pending
-curl -X POST localhost:8080/api/v1/prices/report \
-  -d '{"commodity_id":"maize","market_id":"makurdi-central","submitter_id":"farmer-1","price":18000,"currency":"NGN","unit":"bag_100kg"}'
-
-# 2. Verify a field agent as trusted
-curl -X POST localhost:8080/api/v1/admin/submitters/agent-1/verify -d '{"trust_score":0.9}'
-
-# 3. That agent's submission now auto-accepts even with no local history yet
-curl -X POST localhost:8080/api/v1/prices/report \
-  -d '{"commodity_id":"maize","market_id":"makurdi-central","submitter_id":"agent-1","price":18000,"currency":"NGN","unit":"bag_100kg"}'
-
-# 4. Current price now shows an aggregate
-curl "localhost:8080/api/v1/prices/current?commodity_id=maize&market_id=makurdi-central"
-
-# 5. Manually approve the farmer's earlier pending report from step 1
-curl -X POST localhost:8080/api/v1/admin/reports/<report_id_from_step_1>/review \
-  -d '{"decision":"accepted","reason":"matches agent-reported price"}'
-```
-
-Run tests:
-```bash
-go test ./... -v
-```
-
-## How the validation logic works (`internal/service/price_service.go`)
-
-Every submission gets one of four statuses:
-
-- **accepted** — within normal range of recent local prices, counted into aggregates
-- **pending** — not enough local history yet to judge it (cold start), held for manual review
-- **flagged** — a real outlier compared to recent local prices, held for review
-- **rejected** — an extreme outlier (≥90% off local median), rejected outright regardless of trust
-
-**Cold start problem**: a brand-new commodity/market pair has no price history to compare
-against. Rather than blocking all early submissions, a *trusted, verified* submitter
-(trust score ≥ 0.75) is auto-accepted even with zero history — this is how you'd seed
-data through verified field agents before farmer-submitted volume builds up. Everyone
-else's cold-start submissions go to `pending` for manual review.
-
-**Outlier detection**: once ≥5 accepted prices exist for a commodity/market in the last
-14 days, new submissions are compared against the **median** (not mean — a few bad
-submissions shouldn't skew the reference point) of that recent history. The allowed
-deviation band scales with the submitter's trust score, so a proven-reliable field
-agent gets more leeway than a brand-new, unverified account before triggering review.
-
-**Trust score**: every submitter has a 0–1 trust score (starts at 0.5, neutral).
-It nudges up slightly on each accepted report and down on flagged/rejected ones,
-so reliability compounds over time — a submitter who's consistently accurate needs
-progressively less manual review.
-
-## What's deliberately not built yet
-
-- **Admin/moderation endpoints** — no way yet to manually verify a submitter or
-  approve/reject a `pending`/`flagged` report via the API. Right now that only
-  happens by calling the repository directly (see tests). This is the natural next
-  piece: `POST /api/v1/admin/submitters/:id/verify`, `POST /api/v1/admin/reports/:id/review`.
-- **Postgres implementation** — `domain.PriceRepository` / `domain.SubmitterRepository`
-  are interfaces; only an in-memory implementation exists (`internal/repository/memory`).
-  Swapping in Postgres means writing one new package that satisfies the same
-  interfaces — the service and API layers don't change.
-- **Scheduled aggregate recompute** — aggregates currently only recompute
-  synchronously right after an accepted submission. A nightly job recomputing
-  rolling 7-/30-day trend aggregates (for the trend-insight/sell-timing features)
-  is the next layer on top of this.
-- **Trend/comparison/recommendation endpoints** — this module covers ingestion
-  and current price only, per today's scope.
-
-## Structure
+The project follows a layered architecture.
 
 ```
-cmd/api/main.go                        entrypoint, wiring
-internal/domain/                       entities + repository interfaces (no framework deps)
-internal/repository/memory/            in-memory repository implementations
-internal/service/price_service.go      submission validation, outlier detection, trust scoring
-internal/service/stats.go              median / MAD helpers
-internal/api/                          HTTP handlers + router
+Handlers
+    ↓
+Services
+    ↓
+Repositories
+    ↓
+SQLite Database
 ```
+
+Current backend components include:
+
+- Routing
+- Middleware
+- Repository Pattern
+- Service Layer
+- SQLite Database
+- HTML Templates
+- Static Asset Serving
+
+---
+
+# 🛠 Technology Stack
+
+### Backend
+
+- Go (Golang)
+- net/http
+- SQLite
+- bcrypt
+- HTML Templates
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+### Version Control
+
+- Git
+- GitHub
+
+---
+
+# 📂 Project Structure
+
+```
+backend/
+│
+├── handlers/
+├── internal/
+│   ├── database/
+│   ├── dto/
+│   ├── models/
+│   ├── repository/
+│   ├── services/
+│
+├── middleware/
+├── migrations/
+├── render/
+├── routes/
+│
+└── main.go
+```
+
+---
+
+# 🌍 Target Users
+
+- Smallholder Farmers
+- Commercial Farmers
+- Agricultural Cooperatives
+- Product Buyers
+- Agricultural Extension Workers
+
+---
+
+# 🎯 Hackathon Objectives
+
+Our solution focuses on:
+
+- Reducing post-harvest losses
+- Improving market accessibility
+- Increasing farmer income
+- Supporting digital agriculture
+- Creating a scalable platform for rural communities
+
+---
+
+# 🔮 Future Roadmap
+
+The current version demonstrates the platform foundation.
+
+Future releases will introduce the following features.
+
+---
+
+## 🌾 Smart Marketplace
+
+- Direct farmer-to-buyer trading
+- Verified buyer accounts
+- Live product listings
+- Secure transaction tracking
+
+---
+
+## 📈 AI Market Price Advisor
+
+An intelligent recommendation system that helps farmers decide:
+
+- When to sell
+- Where to sell
+- Expected market trends
+- Price forecasting
+
+Example:
+
+```
+Today's Yam Prices
+
+Otukpo
+₦52,000 / ton
+
+Makurdi
+₦58,000 / ton
+
+Recommendation
+
+Wait 2 days before selling.
+Expected increase: +8%
+```
+---
+
+## 📦 Smart Produce Storage
+
+Future versions will allow farmers to:
+
+- Track stored produce
+- Monitor storage duration
+- Receive spoilage alerts
+- Monitor warehouse conditions
+
+---
+
+## 📱 USSD Support
+
+To improve accessibility for rural communities:
+
+- Register without internet
+- Check market prices
+- Receive farming tips
+- Access emergency alerts
+
+---
+
+## 🌐 Multi-language Support
+
+Planned support includes:
+
+- English
+- Idoma
+- Egede
+- Apa and more...
+
+---
+
+## 👨‍🌾 Cooperative Management
+
+Farmers will be able to:
+
+- Form cooperatives
+- Aggregate produce
+- Negotiate bulk sales
+- Share transportation
+
+---
+
+## 🚚 Logistics Integration
+
+Future releases will include:
+
+- Transport booking
+- Produce delivery tracking
+- Warehouse locations
+- Buyer pickup scheduling
+
+---
+
+## 📊 Farmer Analytics
+
+Dashboard insights including:
+
+- Sales history
+- Revenue trends
+- Produce statistics
+- Storage reports
+
+---
+
+# 🏆 Innovation
+
+Agro-Shield combines:
+
+- Digital Marketplace
+- Smart Storage Management
+- AI Farming Assistant
+- Future Price Prediction
+- Farmer-Centered Design
+
+to create an integrated agricultural ecosystem.
+
+---
+
+# 🌱 Sustainability
+
+The platform is designed to:
+
+- Increase farmer income
+- Reduce food waste
+- Improve food security
+- Encourage digital inclusion
+- Strengthen rural economies
+
+---
+
+# 👥 Team
+
+Developed by Team **Agro-Shield**
+
+Built for the **Idoma Centenary Plus Hackathon 2026**
+
+Together, we believe technology can transform agriculture and empower every farmer.
+
+---
+
+# 📖 Vision
+
+> **To become the leading digital agriculture platform connecting every farmer to better opportunities while reducing post-harvest losses through technology and innovation.**
+
+---
+
+# ❤️ Motto
+
+**Protect Every Harvest. Empower Every Farmer.**
