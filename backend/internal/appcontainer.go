@@ -6,13 +6,26 @@ import (
 )
 
 type Container struct {
-	Auth *services.AuthService
+	Auth  *services.AuthService
+	Crop  *services.CropService
+	Order *services.OrderService
+	AI    *services.AIService
+
+	// Exposed so route-level auth middleware can look up the logged-in user.
+	FarmerRepo *repository.FarmerRepository
 }
 
-func NewContainer(repo *repository.FarmerRepository) *Container {
-
+func NewContainer(
+	farmerRepo *repository.FarmerRepository,
+	cropRepo *repository.CropRepository,
+	orderRepo *repository.OrderRepository,
+	diagnosisRepo *repository.DiagnosisRepository,
+) *Container {
 	return &Container{
-		Auth: services.NewAuthService(repo),
+		Auth:       services.NewAuthService(farmerRepo),
+		Crop:       services.NewCropService(cropRepo),
+		Order:      services.NewOrderService(orderRepo, cropRepo),
+		AI:         services.NewAIService(diagnosisRepo),
+		FarmerRepo: farmerRepo,
 	}
-
 }

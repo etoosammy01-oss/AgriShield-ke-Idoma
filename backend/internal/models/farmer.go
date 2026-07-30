@@ -8,6 +8,15 @@ type Farmer struct {
 	Phone        string
 	PasswordHash string
 	Location     string
+	Role         string // "farmer" or "buyer"
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+func (f *Farmer) IsBuyer() bool {
+	return f.Role == "buyer"
+}
+
+func (f *Farmer) IsFarmer() bool {
+	return f.Role != "buyer"
 }

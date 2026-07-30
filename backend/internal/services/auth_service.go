@@ -19,7 +19,9 @@ func NewAuthService(repo *repository.FarmerRepository) *AuthService {
 	}
 }
 
-func (s *AuthService) Register(firstName, lastName, phone, password, location string) error {
+// Register creates a new farmer or buyer account. role should be "farmer" or
+// "buyer" — anything else defaults to "farmer".
+func (s *AuthService) Register(firstName, lastName, phone, password, location, role string) error {
 
 	if firstName == "" || lastName == "" {
 		return errors.New("name is required")
@@ -35,6 +37,10 @@ func (s *AuthService) Register(firstName, lastName, phone, password, location st
 
 	if len(password) < 8 {
 		return errors.New("password must be at least 8 characters")
+	}
+
+	if role != "buyer" {
+		role = "farmer"
 	}
 
 	existing, err := s.repo.GetByPhone(phone)
@@ -56,11 +62,44 @@ func (s *AuthService) Register(firstName, lastName, phone, password, location st
 	}
 
 	farmer := &models.Farmer{
-		FullName: firstName + " " + lastName,
-		Phone: phone,
+		FullName:     firstName + " " + lastName,
+		Phone:        phone,
 		PasswordHash: string(hash),
-		Location: location,
+		Location:     location,
+		Role:         role,
 	}
 
 	return s.repo.Create(farmer)
+}
+
+// Login verifies a phone number + password against the stored hash and
+// returns the matching farmer/buyer on success.
+func (s *AuthService) Login(phone, password string) (*models.Farmer, error) {
+
+	if phone == "" || password == "" {
+		return nil, errors.New("phone and password are required")
+	}
+
+	farmer, err := s.repo.GetByPhone(phone)
+	if err != nil {
+		return nil, err
+	}
+
+	if farmer == nil {
+		return nil, errors.New("invalid phone number or password")
+	}
+
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(farmer.PasswordHash),
+		[]byte(password),
+	); err != nil {
+		return nil, errors.New("invalid phone number or password")
+	}
+
+	return farmer, nil
+}
+
+// GetFarmerByID loads a user's full details, e.g. for the profile page.
+func (s *AuthService) GetFarmerByID(id int) (*models.Farmer, error) {
+	return s.repo.GetByID(id)
 }

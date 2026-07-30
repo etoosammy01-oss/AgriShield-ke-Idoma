@@ -22,16 +22,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Create repository
-	repo := repository.NewFarmerRepository(db)
+	farmerRepo := repository.NewFarmerRepository(db)
+	cropRepo := repository.NewCropRepository(db)
+	orderRepo := repository.NewOrderRepository(db)
+	diagnosisRepo := repository.NewDiagnosisRepository(db)
 
-	// Create container
-	container := app.NewContainer(repo)
+	container := app.NewContainer(farmerRepo, cropRepo, orderRepo, diagnosisRepo)
 
 	routes.RegisterRoutes(container)
 
 	log.Println("Server Starting on: http://localhost:8080 ...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
-	    log.Println(err)
+		log.Println(err)
 	}
 }

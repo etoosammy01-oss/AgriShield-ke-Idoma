@@ -1,37 +1,60 @@
 package handlers
 
 import (
-	"backend/render"
 	"log"
 	"net/http"
+
+	"backend/internal/services"
+	"backend/middleware"
+	"backend/render"
 )
 
-type LoginData struct {
-	Phone    string
-	Password string
+// LoginPageData is passed to login.html so it can show an error message.
+type LoginPageData struct {
+	Error string
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+type Login struct {
+	service *services.AuthService
+}
+
+func NewLoginHandler(service *services.AuthService) *Login {
+	return &Login{
+		service: service,
+	}
+}
+
+func (h *Login) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		log.Println("User Visited Login Page")
-		if err := render.RenderTemplates(w, "login.html", nil); err != nil {
+		if err := render.RenderTemplates(w, "login.html", LoginPageData{}); err != nil {
 			log.Println("Render Error")
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
+
 	case http.MethodPost:
-		user := LoginData{
-			Phone:    r.FormValue("phone"),
-			Password: r.FormValue("password"),
+		phone := r.FormValue("phone")
+		password := r.FormValue("password")
+
+		farmer, err := h.service.Login(phone, password)
+		if err != nil {
+			log.Println("login failed:", err)
+			if renderErr := render.RenderTemplates(w, "login.html", LoginPageData{
+				Error: "Invalid phone number or password",
+			}); renderErr != nil {
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			}
+			return
 		}
-		if user.Phone == "" || user.Password == "" {
-			log.Println("Both Phone Number And Password Are Required")
-			http.Error(w, "Bad Request", http.StatusBadRequest)
-		}
+
+		sessionID := middleware.CreateSession(farmer.ID)
+		middleware.SetSessionCookie(w, sessionID)
+
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+
 	default:
 		http.Error(w, "Method Not Allowed!", http.StatusMethodNotAllowed)
 	}
-
 }

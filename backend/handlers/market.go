@@ -1,34 +1,80 @@
 package handlers
 
 import (
-	"backend/render"
-	//"backend/internal2"
 	"log"
 	"net/http"
+	"strconv"
+
+	"backend/internal/models"
+	"backend/internal/services"
+	"backend/middleware"
+	"backend/render"
 )
-type MainMarket struct {
-	ID string
-	Name string
-	Location string
-	State string
+
+type Marketplace struct {
+	crop  *services.CropService
+	order *services.OrderService
 }
-func MarketHandler(w http.ResponseWriter, r *http.Request) {
+
+func NewMarketplaceHandler(crop *services.CropService, order *services.OrderService) *Marketplace {
+	return &Marketplace{crop: crop, order: order}
+}
+
+type MarketplacePageData struct {
+	Crops   []models.Crop
+	IsBuyer bool
+	Message string
+	Error   string
+}
+
+func (h *Marketplace) MarketplaceHandler(w http.ResponseWriter, r *http.Request) {
+	farmer, ok := middleware.FarmerFromContext(r)
+	if !ok || farmer == nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
 	switch r.Method {
 	case http.MethodGet:
-		log.Println("User Visited Market Page")
-		if err := render.RenderTemplates(w, "market.html", nil); err != nil {
-			log.Println("Render Error", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Println("User Visited Marketplace")
+		h.render(w, farmer.IsBuyer(), "", "")
+
+	case http.MethodPost:
+		if !farmer.IsBuyer() {
+			h.render(w, farmer.IsBuyer(), "", "Only buyer accounts can place orders")
 			return
 		}
-	case http.MethodPost:
-     User := MainMarket {
-		ID: r.FormValue("id"),
-		Name: r.FormValue("name"),
-		Location: r.FormValue("location"),
-		State: r.FormValue("state"),
-	 }
-	 
-	 http.Redirect(w,r, User.ID, http.StatusSeeOther)
+
+		cropID, _ := strconv.Atoi(r.FormValue("crop_id"))
+		quantity, _ := strconv.ParseFloat(r.FormValue("quantity"), 64)
+
+		if err := h.order.PlaceOrder(farmer.ID, cropID, quantity); err != nil {
+			h.render(w, farmer.IsBuyer(), "", err.Error())
+			return
+		}
+
+		h.render(w, farmer.IsBuyer(), "Order placed successfully!", "")
+
+	default:
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (h *Marketplace) render(w http.ResponseWriter, isBuyer bool, message, errMsg string) {
+	crops, err := h.crop.AvailableCrops()
+	if err != nil {
+		log.Println("failed to load crops:", err)
+	}
+
+	data := MarketplacePageData{
+		Crops:   crops,
+		IsBuyer: isBuyer,
+		Message: message,
+		Error:   errMsg,
+	}
+
+	if err := render.RenderTemplates(w, "marketplace.html", data); err != nil {
+		log.Println("render error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }

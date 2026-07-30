@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"backend/internal/app"
-	"backend/render"
 	"log"
 	"net/http"
-)
 
+	"backend/render"
+)
 
 type UserReg struct {
 	First_Name       string
@@ -15,6 +14,7 @@ type UserReg struct {
 	Email            string
 	Password         string
 	Confirm_Password string
+	Role             string
 }
 
 func (h *Register) RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +34,7 @@ func (h *Register) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			Email:            r.FormValue("email"),
 			Password:         r.FormValue("password"),
 			Confirm_Password: r.FormValue("confirm-password"),
+			Role:             r.FormValue("role"),
 		}
 		if user.First_Name == "" || user.Last_Name == "" || user.Phone == "" || user.Password == "" || user.Confirm_Password == "" {
 			log.Println("user details must not be empty")
@@ -46,12 +47,16 @@ func (h *Register) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		location := r.FormValue("location")
 
-		err := app.AuthService.Register(
+		// Uses the service injected into this handler (h.service), not a
+		// package-level global — a prior version used an uninitialized
+		// global and would have panicked on every registration.
+		err := h.service.Register(
 			user.First_Name,
 			user.Last_Name,
 			user.Phone,
 			user.Password,
 			location,
+			user.Role,
 		)
 
 		if err != nil {
@@ -59,8 +64,10 @@ func (h *Register) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("Farmer registered successfully")
+		log.Println("User registered successfully as", user.Role)
 
+		// New users always land on /login first — they're redirected from
+		// there into the correct dashboard for their role once they sign in.
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
