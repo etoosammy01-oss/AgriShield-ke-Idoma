@@ -27,9 +27,13 @@
 
     <div class="auth-right">
 
-        <form id="login-form">
+        <form id="login-form" method="POST" action="/login">
 
             <h2>Login</h2>
+
+            {{if .Error}}
+            <p class="message" style="color:red;">{{.Error}}</p>
+            {{end}}
 
             <label>Phone Number</label>
             <input
@@ -49,9 +53,7 @@
                 required
             >
 
-            <button type="submit">
-            <a href="/dashboard"> Sign In</a>
-            </button>
+            <button type="submit">Sign In</button>
 
             <p>
                 Don't have an account?

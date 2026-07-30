@@ -7,6 +7,11 @@
 
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/register.css">
+    <style>
+        .role-select { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .role-option { display: flex; align-items: center; gap: 10px; font-weight: normal; border: 1px solid lightgray; border-radius: 8px; padding: 12px 16px; cursor: pointer; }
+        .role-option input { width: auto; }
+    </style>
 </head>
 
 <body>
@@ -29,6 +34,21 @@
 
     <form id="register-form" action="/register" method="POST">
             <h2>Create Account</h2>
+
+            <label>I am a</label>
+            <div class="row role-select">
+
+                <label class="role-option">
+                    <input type="radio" name="role" value="farmer" checked>
+                    🌾 Farmer — I grow and sell produce
+                </label>
+
+                <label class="role-option">
+                    <input type="radio" name="role" value="buyer">
+                    🛒 Buyer — I want to buy produce
+                </label>
+
+            </div>
 
             <div class="row">
 
@@ -71,6 +91,15 @@
                 type="tel"
                 id="phone"
                 placeholder="Enter your phone number"
+                required
+            >
+
+            <label for="location">Location</label>
+            <input
+            name="location"
+                type="text"
+                id="location"
+                placeholder="City / State"
                 required
             >
 

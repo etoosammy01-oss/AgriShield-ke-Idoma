@@ -16,12 +16,16 @@
     <div class="logo">🌾 Agro-Shield</div>
 
     <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="storage.html">Storage</a>
-        <a href="marketplace.html">Marketplace</a>
-        <a href="ai-assistant.html">AI Assistant</a>
-        <a href="profile.html">Profile</a>
-        <a href="login.html">Logout</a>
+        <a href="/dashboard">Dashboard</a>
+        {{if not .IsBuyer}}
+        <a href="/storage">Storage</a>
+        {{end}}
+        <a href="/marketplace">Marketplace</a>
+        {{if not .IsBuyer}}
+        <a href="/ai-assistant">AI Assistant</a>
+        {{end}}
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
     </nav>
 
 </header>
@@ -34,9 +38,9 @@
 
         <div>
 
-            <h1>Farmer's name</h1>
+            <h1>{{.FullName}}</h1>
 
-            <p>Farmer • Benue State, Nigeria</p>
+            <p>{{if .IsBuyer}}Buyer{{else}}Farmer{{end}} • {{.Location}}</p>
 
             <button>Edit Profile</button>
 
@@ -50,34 +54,116 @@
 
             <h2>Personal Information</h2>
 
-            <p><strong>Email:</strong> benjamin@example.com</p>
-            <p><strong>Phone:</strong> +234 800 000 0000</p>
-            <p><strong>Gender:</strong> Male</p>
-            <p><strong>Date of Birth:</strong> 12 Jan 1998</p>
+            <p><strong>Full Name:</strong> {{.FullName}}</p>
+            <p><strong>Phone:</strong> {{.Phone}}</p>
+            <p><strong>Location:</strong> {{.Location}}</p>
+            <p><strong>Account Type:</strong> {{if .IsBuyer}}Buyer{{else}}Farmer{{end}}</p>
+            <p><strong>Member Since:</strong> {{.CreatedAt.Format "January 2006"}}</p>
+
+        </div>
+
+        {{if .IsBuyer}}
+
+        <div class="card">
+
+            <h2>Purchase History</h2>
+
+            {{if .Purchases}}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Crop</th>
+                        <th>Seller</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Purchases}}
+                    <tr>
+                        <td>{{.CropName}}</td>
+                        <td>{{.SellerName}}</td>
+                        <td>{{.Quantity}}</td>
+                        <td>₦{{printf "%.2f" .TotalPrice}}</td>
+                        <td>{{.CreatedAt.Format "02 Jan 2006"}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            {{else}}
+            <p>No purchases yet. <a href="/marketplace">Browse the marketplace</a></p>
+            {{end}}
+
+        </div>
+
+        {{else}}
+
+        <div class="card">
+
+            <h2>My Crops</h2>
+
+            {{if .Crops}}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Crop</th>
+                        <th>Quantity</th>
+                        <th>Listed for Sale</th>
+                        <th>Price/Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Crops}}
+                    <tr>
+                        <td>{{.Name}}</td>
+                        <td>{{.Quantity}} {{.Unit}}</td>
+                        <td>{{if .ListedForSale}}Yes{{else}}No{{end}}</td>
+                        <td>₦{{printf "%.2f" .PricePerUnit}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            {{else}}
+            <p>No crops added yet. <a href="/storage">Register your first crop</a></p>
+            {{end}}
 
         </div>
 
         <div class="card">
 
-            <h2>Farm Information</h2>
+            <h2>Recent Sales</h2>
 
-            <p><strong>Farm Name:</strong> Green Harvest Farm</p>
-            <p><strong>Farm Size:</strong> 12 Hectares</p>
-            <p><strong>Main Crop:</strong> Maize</p>
-            <p><strong>Location:</strong> Otukpo, Benue</p>
+            {{if .Sales}}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Crop</th>
+                        <th>Buyer</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Sales}}
+                    <tr>
+                        <td>{{.CropName}}</td>
+                        <td>{{.BuyerName}}</td>
+                        <td>{{.Quantity}}</td>
+                        <td>₦{{printf "%.2f" .TotalPrice}}</td>
+                        <td>{{.CreatedAt.Format "02 Jan 2006"}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            {{else}}
+            <p>No sales yet.</p>
+            {{end}}
 
         </div>
 
-        <div class="card">
-
-            <h2>Account Statistics</h2>
-
-            <p><strong>Products:</strong> 34</p>
-            <p><strong>Sales:</strong> 120</p>
-            <p><strong>AI Analyses:</strong> 18</p>
-            <p><strong>Member Since:</strong> July 2026</p>
-
-        </div>
+        {{end}}
 
         <div class="card">
 
@@ -94,8 +180,6 @@
     </section>
 
 </main>
-
-<script src="../js/profile.js"></script>
 
 </body>
 </html>

@@ -1,14 +1,14 @@
 const loginForm = document.getElementById("login-form");
-const email = document.getElementById("email");
+const phone = document.getElementById("phone");
 const password = document.getElementById("password");
-const button = loginForm.querySelector("button");
+const button = loginForm.querySelector("button[type='submit']");
 
-// Create message container
+// Create message container for client-side validation errors
 const message = document.createElement("p");
 message.className = "message";
 loginForm.appendChild(message);
 
-// Create show password button
+// Show/hide password toggle
 const toggle = document.createElement("span");
 toggle.textContent = "Show";
 toggle.className = "toggle-password";
@@ -25,28 +25,26 @@ toggle.addEventListener("click", () => {
 });
 
 loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-
     message.textContent = "";
 
-    if (email.value.trim() === "") {
-        message.textContent = "Email is required.";
+    if (phone.value.trim() === "") {
+        event.preventDefault();
+        message.textContent = "Phone number is required.";
         message.style.color = "red";
-        email.focus();
+        phone.focus();
         return;
     }
 
     if (password.value.length < 8) {
+        event.preventDefault();
         message.textContent = "Password must be at least 8 characters.";
         message.style.color = "red";
         password.focus();
         return;
     }
 
+    // Validation passed — let the form submit for real to POST /login.
+    // The server checks the password and creates the session.
     button.disabled = true;
     button.textContent = "Signing In...";
-
-    setTimeout(() => {
-        window.location.href = "dashboard.html";
-    }, 1500);
 });

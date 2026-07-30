@@ -72,8 +72,6 @@ password.addEventListener("input", () => {
 
 registerForm.addEventListener("submit", function (event) {
 
-    event.preventDefault();
-
     message.textContent = "";
 
     if (
@@ -82,28 +80,27 @@ registerForm.addEventListener("submit", function (event) {
         email.value === "" ||
         phone.value === ""
     ) {
-
+        event.preventDefault();
         message.textContent = "Please complete all fields.";
         message.style.color = "red";
         return;
-
     }
 
     if (password.value !== confirmPassword.value) {
-
+        event.preventDefault();
         message.textContent = "Passwords do not match.";
         message.style.color = "red";
         return;
-
     }
 
+    if (password.value.length < 8) {
+        event.preventDefault();
+        message.textContent = "Password must be at least 8 characters.";
+        message.style.color = "red";
+        return;
+    }
+
+    // Validation passed — let the form submit for real to POST /register.
     button.disabled = true;
     button.textContent = "Creating Account...";
-
-    setTimeout(() => {
-
-        window.location.href = "login.html";
-
-    }, 1500);
-
 });
