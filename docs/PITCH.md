@@ -1,19 +1,29 @@
-# AgriShield Ke Idoma Pitch
+# Pitch
 
-## The Problem
+## Problem
 
-## Our Solution
+Farmers lose income because they lack:
 
-## Why Now?
+- storage
+- market information
+- verified buyers
 
-## Target Users
+---
 
-## Demo Flow
+## Solution
 
-## Social Impact
+Agro-Shield provides:
 
-## Technical Innovation
+- Digital marketplace
+- Produce management
+- AI farming assistant
+- Smart market recommendations
 
-## Sustainability
+---
 
-## Future Roadmap
+## Impact
+
+- Reduced waste
+- Higher farmer income
+- Better food security
+- Digital agriculture
