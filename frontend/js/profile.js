@@ -10,7 +10,7 @@ if (editBtn && editModal) {
 
 if (cancelBtn && editModal) {
     cancelBtn.addEventListener("click", () => {
-        editModal.style.display = "none";
+        editModal.style.display = "none";í
     });
 }
 

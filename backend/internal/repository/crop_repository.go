@@ -3,6 +3,7 @@ package repository
 import (
 	"backend/internal/models"
 	"database/sql"
+	"errors"
 )
 
 type CropRepository struct {
@@ -107,6 +108,27 @@ func (r *CropRepository) GetByID(id int) (*models.Crop, error) {
 }
 
 func (r *CropRepository) ReduceQuantity(cropID int, amount float64) error {
-	_, err := r.db.Exec(`UPDATE crops SET quantity = quantity - ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, amount, cropID)
-	return err
+	if amount <= 0 {
+		return nil
+	}
+
+	res, err := r.db.Exec(
+		`UPDATE crops SET quantity = quantity - ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND quantity >= ?`,
+		amount,
+		cropID,
+		amount,
+	)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return errors.New("insufficient quantity available")
+	}
+
+	return nil
 }

@@ -15,6 +15,12 @@
 
     <div class="auth-left">
 
+        <header class="auth-brand">
+            <a class="logo" href="/" aria-label="Agro-Shield home">
+                <img src="/static/assets/images/Agro-Shield%20logo.png" alt="Agro-Shield logo">
+            </a>
+        </header>
+
         <h1>Reset Password</h1>
 
         <p>

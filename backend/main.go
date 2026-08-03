@@ -33,8 +33,8 @@ func main() {
 
 	routes.RegisterRoutes(container)
 
-	log.Println("Server Starting on: http://localhost:8080 ...")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("Server Starting on: http://localhost:9000 ...")
+	if err := http.ListenAndServe(":9000", nil); err != nil {
 		log.Println(err)
 	}
 }

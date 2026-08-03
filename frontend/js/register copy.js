@@ -12,10 +12,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const location = document.getElementById("location");
   const password = document.getElementById("password");
   const confirmPassword = document.getElementById("confirmPassword");
+  const strengthEl = document.getElementById("password-strength");
 
-  const button = registerForm.querySelector("button");
+  if (!password || !confirmPassword) {
+    console.error("Register form password fields were not found.");
+    return;
+  }
 
-  // Message
+  const button = registerForm.querySelector("button[type='submit']");
+
+  // Message for validation errors
   const message = document.createElement("p");
   message.className = "message";
   message.setAttribute("role", "alert");
@@ -26,23 +32,28 @@ document.addEventListener("DOMContentLoaded", function () {
     registerForm.appendChild(message);
   }
 
-  // Password strength
-  const strength = document.createElement("small");
-  strength.className = "password-strength";
-  if (password && password.parentNode) {
-    password.parentNode.appendChild(strength);
-  }
+  // Password strength indicator
+  password.addEventListener("input", function () {
+    const value = password.value;
+    let text = "";
+    let color = "";
 
-  password.addEventListener("input", () => {
-    if (password.value.length < 8) {
-      strength.textContent = "Weak Password";
-      strength.style.color = "red";
-    } else if (password.value.length < 12) {
-      strength.textContent = "Medium Password";
-      strength.style.color = "orange";
+    if (value.length === 0) {
+      text = "";
+    } else if (value.length < 8) {
+      text = "Weak — use at least 8 characters";
+      color = "#dc2626";
+    } else if (value.length < 12) {
+      text = "Medium strength";
+      color = "#ea580c";
     } else {
-      strength.textContent = "Strong Password";
-      strength.style.color = "green";
+      text = "Strong password";
+      color = "#16a34a";
+    }
+
+    if (strengthEl) {
+      strengthEl.textContent = text;
+      strengthEl.style.color = color;
     }
   });
 
@@ -84,4 +95,3 @@ document.addEventListener("DOMContentLoaded", function () {
     button.textContent = "Creating Account...";
   });
 });
-w

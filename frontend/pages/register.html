@@ -1,142 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Account | Agro-Shield</title>
 
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="/static/css/register.css">
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/register.css" />
     <style>
-        .role-select { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .role-option { display: flex; align-items: center; gap: 10px; font-weight: normal; border: 1px solid lightgray; border-radius: 8px; padding: 12px 16px; cursor: pointer; }
-        .role-option input { width: auto; }
+      .role-select {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .role-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: normal;
+        border: 1px solid lightgray;
+        border-radius: 8px;
+        padding: 12px 16px;
+        cursor: pointer;
+      }
+      .role-option input {
+        width: auto;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
+    <div class="auth-container">
+      <div class="auth-left">
+        <!-- ======================================================
+        AUTH BRANDING
 
-<div class="auth-container">
-
-    <div class="auth-left">
-
+        The logo is placed at the top of the left panel to make
+        the registration page feel consistent with the login page.
+   ======================================================= -->
+        <header class="auth-brand">
+          <a class="logo auth-logo-link" href="/" aria-label="Agro-Shield home">
+            <img
+              src="/static/assets/images/Agro-Shield%20logo.png"
+              alt="Agro-Shield logo"
+            />
+          </a>
+        </header>
         <h1>Join Agro-Shield</h1>
-
         <p>
-            Create your account to monitor farm produce,
-            connect with buyers, receive AI-powered crop
-            diagnosis, and grow your agricultural business.
+          Create your account to monitor farm produce, connect with buyers,
+          receive AI-powered crop diagnosis, and grow your agricultural
+          business.
         </p>
+      </div>
 
-    </div>
+      <div class="auth-right">
+        <form id="register-form" action="/register" method="POST">
+          <h2>Create Account</h2>
 
-    <div class="auth-right">
+          <label>I am a</label>
+          <div class="row role-select">
+            <label class="role-option">
+              <input type="radio" name="role" value="farmer" checked />
+              🌾 Farmer — I grow and sell produce
+            </label>
 
-    <form id="register-form" action="/register" method="POST">
-            <h2>Create Account</h2>
+            <label class="role-option">
+              <input type="radio" name="role" value="buyer" />
+              🛒 Buyer — I want to buy produce
+            </label>
+          </div>
 
-            <label>I am a</label>
-            <div class="row role-select">
-
-                <label class="role-option">
-                    <input type="radio" name="role" value="farmer" checked>
-                    🌾 Farmer — I grow and sell produce
-                </label>
-
-                <label class="role-option">
-                    <input type="radio" name="role" value="buyer">
-                    🛒 Buyer — I want to buy produce
-                </label>
-
-            </div>
-
-            <div class="row">
-
-                <div>
-                    <label for="first-name">First Name</label>
-                    <input
-                    name="first-name"
-                        type="text"
-                        id="first-name"
-                        placeholder="First Name"
-                        required
-                    >
-                </div>
-
-                <div>
-                    <label for="last-name">Last Name</label>
-                    <input
-                    name="last-name"
-                        type="text"
-                        id="last-name"
-                        placeholder="Last Name"
-                        required
-                    >
-                </div>
-
-            </div>
-
-            <label for="email">Email Address</label>
-            <input
-            name="email"
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                required
-            >
-
-            <label for="phone">Phone Number</label>
-            <input
-            name="phone"
-                type="tel"
-                id="phone"
-                placeholder="Enter your phone number"
-                required
-            >
-
-            <label for="location">Location</label>
-            <input
-            name="location"
+          <div class="row">
+            <div>
+              <label for="first-name">First Name</label>
+              <input
+                name="first-name"
                 type="text"
-                id="location"
-                placeholder="City / State"
+                id="first-name"
+                placeholder="First Name"
                 required
-            >
+              />
+            </div>
 
-            <label for="password">Password</label>
-            <input
+            <div>
+              <label for="last-name">Last Name</label>
+              <input
+                name="last-name"
+                type="text"
+                id="last-name"
+                placeholder="Last Name"
+                required
+              />
+            </div>
+          </div>
+
+          <label for="email">Email Address</label>
+          <input
+            name="email"
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+          />
+
+          <label for="phone">Phone Number</label>
+          <input
+            name="phone"
+            type="tel"
+            id="phone"
+            placeholder="Enter your phone number"
+            required
+          />
+
+          <label for="location">Location</label>
+          <input
+            name="location"
+            type="text"
+            id="location"
+            placeholder="City / State"
+            required
+          />
+
+          <label for="password">Password</label>
+          <input
             name="password"
-                type="password"
-                id="password"
-                placeholder="Create password"
-                required
-            >
+            type="password"
+            id="password"
+            placeholder="Create password"
+            required
+          />
 
-            <label for="confirm-password">Confirm Password</label>
-            <input
+          <label for="confirm-password">Confirm Password</label>
+          <input
             name="confirm-password"
-                type="password"
-                id="confirm-password"
-                placeholder="Confirm password"
-                required
-            >
+            type="password"
+            id="confirmPassword"
+            placeholder="Confirm password"
+            required
+          />
 
-            <button type="submit">
-                Create Account
-            </button>
+          <label class="show-password" for="registerShowPassword">
+            <input type="checkbox" id="registerShowPassword" />
+            Show Password
+          </label>
 
-            <p>
-                Already have an account?
-                <a href="/login">Login</a>
-            </p>
+          <button type="submit">Create Account</button>
 
+          <p>
+            Already have an account?
+            <a href="/login">Login</a>
+          </p>
         </form>
-
+      </div>
     </div>
 
-</div>
-
-<script src="/static/js/register.js"></script>
-
-</body>
+    <script src="/static/js/password-toggle.js"></script>
+    <script src="/static/js/register.js"></script>
+  </body>
 </html>

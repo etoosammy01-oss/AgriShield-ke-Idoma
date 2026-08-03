@@ -89,35 +89,59 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
+/* Modern password field with eye toggle */
 .password-field {
   margin-top: 20px;
 }
 
-.password-field > label:first-of-type {
+.password-field > label {
   margin-top: 0;
 }
 
-.password-field input[type="password"],
-.password-field input[type="text"] {
-  width: 100%;
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.show-password {
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 48px; /* room for the toggle button */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #6b7280;
   cursor: pointer;
-  font-weight: 400;
-  font-size: 14px;
-  color: #4b5563;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
 }
 
-.show-password input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-  cursor: pointer;
-  accent-color: #15803d;
+.password-toggle:hover {
+  color: #15803d;
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
 }
 
 button[type="submit"] {
